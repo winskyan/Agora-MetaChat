@@ -301,7 +301,6 @@ public class MetaContext implements IMetaEventHandler, AgoraMediaPlayer.OnMediaV
 
         MetaSceneConfig sceneConfig = new MetaSceneConfig();
         sceneConfig.mActivityContext = activityContext;
-        //sceneConfig.mSyncMode = MetachatSceneConfig.StateSyncMode.STATE_SYNC_MODE_NONE;
         sceneConfig.mEnableFaceCapture = true;
         sceneConfig.mFaceCaptureAppId = KeyCenter.FACE_CAP_APP_ID;
         sceneConfig.mFaceCaptureCertificate = KeyCenter.FACE_CAP_APP_KEY;
