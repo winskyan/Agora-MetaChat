@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Agora-MetaSDK"
+rootProject.name = "Agora-MetaChat"
 include ':app'

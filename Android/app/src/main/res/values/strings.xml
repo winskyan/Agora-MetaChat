@@ -1,16 +1,22 @@
 <resources>
-    <string name="app_name">AgoraMetaExample</string>
-    <string name="hide_local_view">隐藏本地视角</string>
-    <string name="show_local_view">显示本地视角</string>
-    <string name="hide_remote_view">隐藏远端视角</string>
-    <string name="show_remote_view">显示远端视角</string>
-    <string name="uid_label">uid:%1$d</string>
-    <string name="cancel">取消</string>
-    <string name="save">保存</string>
-    <string name="dress_setting">换装</string>
-    <string name="face_setting">捏脸</string>
-    <string name="face_shape_label">%1s:%2d</string>
-    <string name="btn_switch_remote_preview_avatar">切换远端显示Avatar</string>
-    <string name="btn_switch_remote_preview_camera">切换远端显示摄像头</string>
-
+    <string name="app_name">MetaClub</string>
+    <string name="metachat">MetaChat</string>
+    <string name="role">Role</string>
+    <string name="agora_io">Agora.io</string>
+    <string name="select_avatar">Select avatar</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="gender">Gender</string>
+    <string name="enter_nickname">Please enter a nickname</string>
+    <string name="nickname_error_tips">must contain 2&#8211;12 characters</string>
+    <string name="nickname">Nickname</string>
+    <string name="host">Host</string>
+    <string name="audience">Audience</string>
+    <string name="playing">Playing</string>
+    <string name="loading">Loading</string>
+    <string name="middle_label">-</string>
+    <string name="bgm_title">背景音乐</string>
+    <string name="scene_title">场景</string>
+    <string name="action_title">动作</string>
+    <string name="lets_chat">Let\'s Chat!</string>
 </resources>
