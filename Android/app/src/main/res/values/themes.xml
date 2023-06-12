@@ -14,27 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
-
-    <style name="BottomSheetDialogStyle" parent="Theme.Design.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/bottom_dialog_bg</item>
-       <!-- <item name="enableEdgeToEdge">true</item>-->
-    </style>
-
-    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="ImageRoundStyle">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">12dp</item>
-    </style>
-
 </resources>

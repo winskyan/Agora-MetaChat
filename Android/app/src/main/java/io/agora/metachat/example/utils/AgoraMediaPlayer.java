@@ -1,6 +1,5 @@
 package io.agora.metachat.example.utils;
 
-import android.net.Uri;
 import android.util.Log;
 
 import io.agora.base.VideoFrame;
@@ -17,8 +16,6 @@ public class AgoraMediaPlayer implements IMediaPlayerObserver, IMediaPlayerVideo
     private volatile static AgoraMediaPlayer mAgoraMediaPlayer;
     private IMediaPlayer mMediaPlayer;
     private OnMediaVideoFramePushListener mOnMediaVideoFramePushListener;
-
-    private PlayerObserver mPlayerObserver;
 
     private AgoraMediaPlayer() {
 
@@ -38,26 +35,12 @@ public class AgoraMediaPlayer implements IMediaPlayerObserver, IMediaPlayerVideo
     public void initMediaPlayer(RtcEngine rtcEngine) {
         mMediaPlayer = rtcEngine.createMediaPlayer();
         mMediaPlayer.adjustPlayoutVolume(20);
-        registerObserver();
-    }
-
-    public void adjustPlayVolume(int volume) {
-        mMediaPlayer.adjustPlayoutVolume(volume);
-    }
-
-    public int getMediaPlayerId() {
-        if (null != mMediaPlayer) {
-            return mMediaPlayer.getMediaPlayerId();
-        }
-        return -1;
+        mMediaPlayer.registerPlayerObserver(this);
+        mMediaPlayer.registerVideoFrameObserver(this);
     }
 
     public void setOnMediaVideoFramePushListener(OnMediaVideoFramePushListener onMediaVideoFramePushListener) {
         this.mOnMediaVideoFramePushListener = onMediaVideoFramePushListener;
-    }
-
-    public void setPlayerObserver(PlayerObserver mPlayerObserver) {
-        this.mPlayerObserver = mPlayerObserver;
     }
 
     public void play(String url, long startPos) {
@@ -67,22 +50,11 @@ public class AgoraMediaPlayer implements IMediaPlayerObserver, IMediaPlayerVideo
         }
     }
 
-    public void play(Uri uri, long startPos) {
-        int ret = mMediaPlayer.open(uri, startPos);
-        if (ret == io.agora.rtc2.Constants.ERR_OK) {
-            mMediaPlayer.setLoopCount(MetaChatConstants.PLAY_ADVERTISING_VIDEO_REPEAT);
-        }
-    }
-
     public void stop() {
         if (null != mMediaPlayer) {
+            mMediaPlayer.registerVideoFrameObserver(null);
+            mMediaPlayer.unRegisterPlayerObserver(this);
             mMediaPlayer.stop();
-        }
-    }
-
-    public void destroy() {
-        if (null != mMediaPlayer) {
-            unregisterObserver();
             mMediaPlayer.destroy();
             mMediaPlayer = null;
         }
@@ -91,35 +63,21 @@ public class AgoraMediaPlayer implements IMediaPlayerObserver, IMediaPlayerVideo
     public void pause() {
         if (null != mMediaPlayer) {
             mMediaPlayer.pause();
-            unregisterObserver();
+            mMediaPlayer.registerVideoFrameObserver(null);
         }
     }
 
     public void resume() {
         if (null != mMediaPlayer) {
             mMediaPlayer.resume();
-            registerObserver();
-        }
-    }
-
-    private void registerObserver() {
-        if (null != mMediaPlayer) {
             mMediaPlayer.registerVideoFrameObserver(this);
-            mMediaPlayer.registerPlayerObserver(this);
-        }
-    }
-
-    private void unregisterObserver() {
-        if (null != mMediaPlayer) {
-            mMediaPlayer.registerVideoFrameObserver(null);
-            mMediaPlayer.unRegisterPlayerObserver(this);
         }
     }
 
 
     @Override
     public void onPlayerStateChanged(Constants.MediaPlayerState state, Constants.MediaPlayerError error) {
-        Log.i(TAG, "onPlayerStateChanged state=" + state + ",error=" + error);
+        Log.i(TAG, "onPlayerStateChanged state=" + state);
         if (Constants.MediaPlayerState.PLAYER_STATE_OPEN_COMPLETED == state) {
             if (mMediaPlayer.play() != io.agora.rtc2.Constants.ERR_OK) {
                 Log.i(TAG, "onPlayerStateChanged play success");
@@ -129,9 +87,7 @@ public class AgoraMediaPlayer implements IMediaPlayerObserver, IMediaPlayerVideo
 
     @Override
     public void onPositionChanged(long position_ms) {
-        if (null != mPlayerObserver) {
-            mPlayerObserver.onPositionChanged(position_ms);
-        }
+
     }
 
     @Override
@@ -184,9 +140,5 @@ public class AgoraMediaPlayer implements IMediaPlayerObserver, IMediaPlayerVideo
 
     public interface OnMediaVideoFramePushListener {
         void onMediaVideoFramePushed(VideoFrame frame);
-    }
-
-    public interface PlayerObserver {
-        void onPositionChanged(long position_ms);
     }
 }

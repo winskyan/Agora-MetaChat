@@ -1,5 +1,6 @@
 package io.agora.metachat.example.inf;
 
+
 import io.agora.rtc2.IRtcEngineEventHandler;
 
 public interface IRtcEventCallback {

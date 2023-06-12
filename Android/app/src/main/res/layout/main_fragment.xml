@@ -1,256 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/bg2"
-    tools:context="io.agora.metachat.example.ui.activity.AudienceActivity">
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="33dp"
-        android:layout_marginTop="53dp"
-        android:text="@string/metachat"
-        android:textColor="#ff8342e4"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="136dp"
-        android:layout_height="136dp"
-        android:layout_marginTop="54dp"
-        android:src="@mipmap/girl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
-    <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@mipmap/medal"
-        app:layout_constraintBottom_toBottomOf="@+id/avatar"
-        app:layout_constraintEnd_toEndOf="@+id/avatar" />
-
-    <TextView
-        android:id="@+id/tv_role"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="4dp"
-        android:text="@string/role"
-        android:textColor="#C6C4DE"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/linear_role_host"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        tools:context=".ui.main.MainFragment">
 
-    <LinearLayout
-        android:id="@+id/linear_role_host"
-        android:layout_width="133dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/main_select_button_bg"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/tv_nickname"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/host"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp" />
-    </LinearLayout>
+            android:layout_height="33dp"
+            android:layout_marginTop="53dp"
+            android:text="MetaChat"
+            android:textColor="#ff8342e4"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/linear_role_audience"
-        android:layout_width="133dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/main_select_button_bg"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/tv_nickname"
-        app:layout_constraintEnd_toEndOf="parent">
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="136dp"
+            android:layout_height="136dp"
+            android:layout_marginTop="54dp"
+            android:src="@mipmap/girl"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
 
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/medal"
+            app:layout_constraintBottom_toBottomOf="@+id/avatar"
+            app:layout_constraintEnd_toEndOf="@+id/avatar" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <EditText
+            android:id="@+id/nickname"
+            android:layout_width="275dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="57dp"
+            android:background="@drawable/ic_edittext_background"
+            android:drawableStart="@mipmap/user_fill"
+            android:drawablePadding="14dp"
+            android:hint="请输入昵称"
+            android:maxLength="10"
+            android:paddingHorizontal="30dp"
+            android:singleLine="true"
+            android:textColor="#ffa18bb0"
+            android:textColorHint="#ffa18bb0"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+        <TextView
+            android:id="@+id/tips"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/audience"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp" />
-    </LinearLayout>
+            android:layout_height="17dp"
+            android:layout_marginStart="58dp"
+            android:layout_marginTop="3dp"
+            android:text="请输入2-10个字符"
+            android:textColor="#ffff6969"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/nickname"
+            app:layout_constraintTop_toBottomOf="@+id/nickname" />
 
+        <EditText
+            android:id="@+id/sex"
+            android:layout_width="275dp"
+            android:layout_height="54dp"
+            android:layout_marginTop="27dp"
+            android:background="@drawable/ic_edittext_background"
+            android:drawableStart="@mipmap/user_star_fill"
+            android:drawableEnd="@mipmap/arrow_down"
+            android:drawablePadding="14dp"
+            android:editable="false"
+            android:hint="请选择性别"
+            android:paddingHorizontal="30dp"
+            android:textColor="#ffa18bb0"
+            android:textColorHint="#ffa18bb0"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nickname" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_nickname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="4dp"
-        android:text="@string/nickname"
-        android:textColor="#C6C4DE"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/et_nickname"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0"
+            android:dropDownWidth="275dp"
+            android:dropDownVerticalOffset="62dp"
+            android:popupBackground="@drawable/ic_spinner_dropdown_background"
+            android:spinnerMode="dropdown"
+            app:layout_constraintBottom_toBottomOf="@+id/sex"
+            app:layout_constraintEnd_toEndOf="@+id/sex"
+            app:layout_constraintStart_toStartOf="@+id/sex"
+            app:layout_constraintTop_toTopOf="@+id/sex" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_nickname_illegal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
-        android:gravity="center"
-        android:text="@string/nickname_error_tips"
-        android:textColor="#FF6969"
-        android:textSize="12sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/tv_nickname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_nickname"
-        tools:visibility="visible" />
+        <ImageButton
+            android:id="@+id/enter"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:src="@mipmap/enter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_nickname"
-        android:layout_width="0dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/enter_nickname_bg"
-        android:hint="@string/enter_nickname"
-        android:maxLength="12"
-        android:maxLines="1"
-        android:paddingStart="18dp"
-        android:paddingEnd="36dp"
-        android:textColor="#1B0844"
-        android:textColorHint="#756C92"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@id/tv_gender"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_nickname_random"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="15dp"
-        android:src="@drawable/ic_random_name"
-        app:layout_constraintBottom_toBottomOf="@id/et_nickname"
-        app:layout_constraintEnd_toEndOf="@id/et_nickname"
-        app:layout_constraintTop_toTopOf="@id/et_nickname" />
-
-    <TextView
-        android:id="@+id/tv_gender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="4dp"
-        android:text="@string/gender"
-        android:textColor="#C6C4DE"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/linear_male"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/linear_male"
-        android:layout_width="133dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/main_select_button_bg"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/enter"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
+        <TextView
+            android:id="@+id/enter_tip"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_male" />
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:alpha="0.41"
+            android:text="进入"
+            android:textColor="#d9f9f9f9"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/enter" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <TextView
+            android:id="@+id/logo_label"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/male"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp" />
-    </LinearLayout>
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:alpha="0.51"
+            android:text="Agora.io"
+            android:textColor="#d9ffffff"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/enter_tip" />
 
-    <LinearLayout
-        android:id="@+id/linear_female"
-        android:layout_width="133dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/main_select_button_bg"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/enter"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_female" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/female"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp" />
-    </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/enter"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_marginBottom="10dp"
-        android:background="@null"
-        android:src="@mipmap/enter"
-        app:layout_constraintBottom_toTopOf="@id/enter_tip"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/enter_tip"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginBottom="20dp"
-        android:alpha="0.41"
-        android:text="@string/select_avatar"
-        android:textColor="#d9f9f9f9"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/logo_label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/logo_label"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginBottom="15dp"
-        android:alpha="0.51"
-        android:text="@string/agora_io"
-        android:textColor="#d9ffffff"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

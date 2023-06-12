@@ -3,11 +3,11 @@ package io.agora.metachat.example.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.agora.metachat.example.models.game.GarmentType;
-import io.agora.metachat.example.models.game.SkinInfo;
-import io.agora.metachat.example.models.game.TabEntity;
-import io.agora.metachat.example.utils.MetaChatConstants;
 import io.agora.metachat.example.R;
+import io.agora.metachat.example.models.GarmentType;
+import io.agora.metachat.example.models.SkinInfo;
+import io.agora.metachat.example.models.TabEntity;
+import io.agora.metachat.example.utils.MetaChatConstants;
 
 /**
  * 换装数据

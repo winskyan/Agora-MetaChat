@@ -8,21 +8,19 @@ import androidx.lifecycle.ViewModel;
 import java.util.Arrays;
 import java.util.List;
 
-import io.agora.metachat.example.utils.KeyCenter;
 import io.agora.metachat.AvatarModelInfo;
 import io.agora.metachat.IMetachatEventHandler;
 import io.agora.metachat.IMetachatScene;
 import io.agora.metachat.MetachatBundleInfo;
 import io.agora.metachat.MetachatSceneInfo;
 import io.agora.metachat.MetachatUserInfo;
+import io.agora.metachat.example.utils.KeyCenter;
 import io.agora.metachat.example.MainApplication;
 import io.agora.metachat.example.metachat.MetaChatContext;
 import io.agora.metachat.example.utils.MetaChatConstants;
 import io.agora.metachat.example.utils.SingleLiveData;
-import io.agora.rtc2.Constants;
 
 public class MainViewModel extends ViewModel implements IMetachatEventHandler {
-    private static final String TAG = MainViewModel.class.getSimpleName();
 
     private final SingleLiveData<String> avatar = new SingleLiveData<>();
     private final SingleLiveData<String> nickname = new SingleLiveData<>();
@@ -81,10 +79,11 @@ public class MainViewModel extends ViewModel implements IMetachatEventHandler {
     public void getScenes() {
         MetaChatContext metaChatContext = MetaChatContext.getInstance();
         metaChatContext.registerMetaChatEventHandler(this);
-        if (metaChatContext.initialize(MainApplication.mGlobalApplication)) {
-            if (!metaChatContext.getSceneInfos()) {
-                Log.e(TAG, "get scene info fail");
-            }
+        boolean flag = metaChatContext.initialize(
+                MainApplication.mGlobalApplication
+        );
+        if (flag) {
+            metaChatContext.getSceneInfos();
         }
     }
 
@@ -112,11 +111,7 @@ public class MainViewModel extends ViewModel implements IMetachatEventHandler {
             mUserName = MetaChatContext.getInstance().getRoleInfo().getName() == null ? mUserId : MetaChatContext.getInstance().getRoleInfo().getName();
             mUserIconUrl = MetaChatContext.getInstance().getRoleInfo().getAvatar() == null ? "https://accpic.sd-rtn.com/pic/test/png/2.png" : MetaChatContext.getInstance().getRoleInfo().getAvatar();
         }});
-        boolean needDownloadScene = true;
-        if ((MetaChatContext.getInstance().getCurrentScene() == MetaChatConstants.SCENE_IDOL) && (Constants.CLIENT_ROLE_AUDIENCE == MetaChatContext.getInstance().getClientRoleType())) {
-            needDownloadScene = false;
-        }
-        if (metaChatContext.isSceneDownloaded(sceneInfo) || !needDownloadScene) {
+        if (metaChatContext.isSceneDownloaded(sceneInfo)) {
             selectScene.postValue(sceneInfo.mSceneId);
         } else {
             requestDownloading.postValue(true);
@@ -162,5 +157,4 @@ public class MainViewModel extends ViewModel implements IMetachatEventHandler {
             selectScene.postValue(mSceneId);
         }
     }
-
 }
