@@ -2,14 +2,13 @@ package io.agora.metachat.example;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import io.agora.metachat.example.ui.main.MainFragment;
 
@@ -35,74 +34,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        View decorView = getWindow().getDecorView();
-
-// Hide both the navigation bar and the status bar.
-// SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-// a general rule, you should design your app to hide the status bar whenever you
-// hide the navigation bar.
-
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-
-                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-
-        decorView.setSystemUiVisibility(uiOptions);
-
         setContentView(R.layout.main_activity);
 
-        handlePermission();
-        startFragment();
-    }
-
-    private void startFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commitNow();
-    }
-
-    private void handlePermission() {
-
-        // 需要动态申请的权限
-        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-
-        //查看是否已有权限
-        int checkSelfPermission = ActivityCompat.checkSelfPermission(getApplicationContext(), permission);
-
-        if (checkSelfPermission == PackageManager.PERMISSION_GRANTED) {
-            //已经获取到权限  获取用户媒体资源
-
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.RECORD_AUDIO) ==
+                PackageManager.PERMISSION_GRANTED) {
+            // You can use the API that requires the permission.
+//            performAction(...);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            // In an educational UI, explain to the user why your app requires this
+            // permission for a specific feature to behave as expected. In this UI,
+            // include a "cancel" or "no thanks" button that allows the user to
+            // continue using your app without granting the permission.
+//            showInContextUI(...);
         } else {
-
-            //没有拿到权限  是否需要在第二次请求权限的情况下
-            // 先自定义弹框说明 同意后在请求系统权限(就是是否需要自定义DialogActivity)
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-
-            } else {
-                appRequestPermission();
-            }
+            // You can directly ask for the permission.
+            // The registered ActivityResultCallback gets the result of this request.
+            requestPermissionLauncher.launch(
+                    Manifest.permission.RECORD_AUDIO);
         }
 
-    }
-
-    private void appRequestPermission() {
-        String[] permissions = new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.CAMERA,
-        };
-        requestPermissions(permissions, 1);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, MainFragment.newInstance())
+                    .commitNow();
         }
     }
-
 
     @Override
     public void onBackPressed() {

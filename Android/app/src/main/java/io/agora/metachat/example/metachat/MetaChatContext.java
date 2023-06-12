@@ -8,8 +8,6 @@ import android.view.TextureView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -30,8 +28,6 @@ import io.agora.metachat.MetachatSceneConfig;
 import io.agora.metachat.MetachatSceneInfo;
 import io.agora.metachat.MetachatUserInfo;
 import io.agora.metachat.MetachatUserPositionInfo;
-import io.agora.metachat.SceneDisplayConfig;
-import io.agora.metachat.example.inf.IRtcEventCallback;
 import io.agora.metachat.example.models.EnterSceneExtraInfo;
 import io.agora.metachat.example.models.RoleInfo;
 import io.agora.metachat.example.models.UnityMessage;
@@ -44,7 +40,6 @@ import io.agora.rtc2.ChannelMediaOptions;
 import io.agora.rtc2.Constants;
 import io.agora.rtc2.IRtcEngineEventHandler;
 import io.agora.rtc2.RtcEngine;
-import io.agora.rtc2.RtcEngineConfig;
 import io.agora.spatialaudio.ILocalSpatialAudioEngine;
 import io.agora.spatialaudio.LocalSpatialAudioConfig;
 import io.agora.spatialaudio.RemoteVoicePositionInfo;
@@ -76,9 +71,6 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
     private boolean needSaveDressInfo;
     private boolean isInitMetachat;
 
-    private IRtcEventCallback iRtcEventCallback;
-    private String scenePath;
-
     private MetaChatContext() {
         metaChatEventHandlerMap = new ConcurrentHashMap<>();
         metaChatSceneEventHandlerMap = new ConcurrentHashMap<>();
@@ -101,19 +93,11 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
         return instance;
     }
 
-    public void setRtcEventCallback(IRtcEventCallback iRtcEventCallback) {
-        this.iRtcEventCallback = iRtcEventCallback;
-    }
-
     public boolean initialize(Context context) {
         int ret = Constants.ERR_OK;
         if (rtcEngine == null) {
             try {
-                RtcEngineConfig rtcConfig = new RtcEngineConfig();
-                rtcConfig.mContext = context;
-                rtcConfig.mAppId = KeyCenter.APP_ID;
-                rtcConfig.mChannelProfile = Constants.CHANNEL_PROFILE_LIVE_BROADCASTING;
-                rtcConfig.mEventHandler = new IRtcEngineEventHandler() {
+                rtcEngine = RtcEngine.create(context, KeyCenter.APP_ID, new IRtcEngineEventHandler() {
                     @Override
                     public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
                         Log.d(TAG, String.format("onJoinChannelSuccess %s %d", channel, uid));
@@ -123,73 +107,30 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
                     @Override
                     public void onUserOffline(int uid, int reason) {
                         Log.d(TAG, String.format("onUserOffline %d %d ", uid, reason));
-                        if (spatialAudioEngine != null) {
+                        if (spatialAudioEngine != null)
                             spatialAudioEngine.removeRemotePosition(uid);
-                        }
-
-                        if (null != iRtcEventCallback) {
-                            iRtcEventCallback.onUserOffline(uid, reason);
-                        }
                     }
 
                     @Override
                     public void onAudioRouteChanged(int routing) {
                         Log.d(TAG, String.format("onAudioRouteChanged %d", routing));
                     }
-
-                    @Override
-                    public void onUserJoined(int uid, int elapsed) {
-                        Log.d(TAG, "onUserJoined uid=" + uid);
-                        if (null != iRtcEventCallback) {
-                            iRtcEventCallback.onUserJoined(uid, elapsed);
-                        }
-                    }
-
-                    @Override
-                    public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
-                        Log.d(TAG, "onFirstRemoteVideoDecoded uid=" + uid + ",width=" + width + ",heigh=" + height + ",elapsed=" + elapsed);
-                        if (null != iRtcEventCallback) {
-                            iRtcEventCallback.onFirstRemoteVideoDecoded(uid, width, height, elapsed);
-                        }
-                    }
-                };
-
-                rtcConfig.mAudioScenario = Constants.AudioScenario.getValue(Constants.AudioScenario.DEFAULT);
-
-                rtcEngine = RtcEngine.create(rtcConfig);
+                });
                 rtcEngine.setParameters("{\"rtc.enable_debug_log\":true}");
-
-
-                if (currentScene == MetaChatConstants.SCENE_GAME) {
-                    rtcEngine.enableExtension("agora_video_filters_face_capture", "face_capture", true);
-                    rtcEngine.setExtensionProperty(
-                            "agora_video_filters_face_capture", "face_capture", "face_capture_options", "{" +
-                                    "\"activationInfo\":{" +
-                                    "\"faceCapAppId\":\"" + KeyCenter.FACE_CAP_APP_ID + "\"," +
-                                    "\"faceCapAppKey\":\"" + KeyCenter.FACE_CAP_APP_KEY + "\"," +
-                                    "\"agoraAppId\":\"" + KeyCenter.APP_ID + "\"," +
-                                    "\"agoraRtmToken\":\"" + KeyCenter.RTM_TOKEN + "\"," +
-                                    "\"agoraUid\":\"" + KeyCenter.RTM_UID + "\"}," +
-                                    "\"enable\":1" +
-                                    "}"
-                    );
-                }
-
                 rtcEngine.enableAudio();
-                rtcEngine.enableVideo();
+                rtcEngine.disableVideo();
+                rtcEngine.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
                 rtcEngine.setAudioProfile(
                         Constants.AUDIO_PROFILE_DEFAULT, Constants.AUDIO_SCENARIO_GAME_STREAMING
                 );
-                rtcEngine.setDefaultAudioRoutetoSpeakerphone(true);
-                rtcEngine.setExternalVideoSource(true, true, Constants.ExternalVideoSourceType.VIDEO_FRAME);
-                scenePath = context.getExternalCacheDir().getPath();
+
                 {
                     metaChatService = IMetachatService.create();
                     MetachatConfig config = new MetachatConfig() {{
                         mRtcEngine = rtcEngine;
                         mAppId = KeyCenter.APP_ID;
                         mRtmToken = KeyCenter.RTM_TOKEN;
-                        mLocalDownloadPath = scenePath;
+                        mLocalDownloadPath = context.getExternalCacheDir().getPath();
                         mUserId = KeyCenter.RTM_UID;
                         mEventHandler = MetaChatContext.this;
                     }};
@@ -272,7 +213,6 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
 
         MetachatSceneConfig sceneConfig = new MetachatSceneConfig();
         sceneConfig.mActivityContext = activityContext;
-        //sceneConfig.mSyncMode = MetachatSceneConfig.StateSyncMode.STATE_SYNC_MODE_NONE;
         int ret = -1;
         if (metaChatScene == null) {
             ret = metaChatService.createScene(sceneConfig);
@@ -305,8 +245,6 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
             config.mRoomName = this.roomName;
             //内容中心对应的ID
             config.mSceneId = this.sceneInfo.mSceneId;
-//            config.mSceneId = 0;
-//            config.mScenePath = scenePath + "/23";
             /*
              *仅为示例格式，具体格式以项目实际为准
              *   "extraCustomInfo":{
@@ -327,7 +265,6 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
 
     @Override
     public void onCreateSceneResult(IMetachatScene scene, int errorCode) {
-        Log.i(TAG, "onCreateSceneResult errorCode: " + errorCode);
         metaChatScene = scene;
         localUserAvatar = metaChatScene.getLocalUserAvatar();
         for (IMetachatEventHandler handler : metaChatEventHandlerMap.keySet()) {
@@ -375,7 +312,6 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
         int ret = Constants.ERR_OK;
         if (metaChatScene != null) {
             ret += rtcEngine.leaveChannel();
-            enableSceneVideo(this.sceneView, false);
             ret += metaChatScene.leaveScene();
         }
         if (spatialAudioEngine != null) {
@@ -435,9 +371,6 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
 
             if (null != metaChatScene) {
                 metaChatScene.setSceneParameters("{\"debugUnity\":true}");
-                if (MetaChatConstants.SCENE_GAME == currentScene) {
-                    enableSceneVideo(this.sceneView, true);
-                }
             }
             rtcEngine.joinChannel(
                     KeyCenter.RTC_TOKEN, roomName, KeyCenter.RTC_UID,
@@ -482,17 +415,9 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
 
     @Override
     public void onReleasedScene(int status) {
-        Log.d(TAG, String.format("[metachat] onReleasedScene %d", status));
+        Log.d(TAG, String.format("onReleasedScene %d", status));
         for (IMetachatSceneEventHandler handler : metaChatSceneEventHandlerMap.keySet()) {
             handler.onReleasedScene(status);
-        }
-    }
-
-    @Override
-    public void onSceneVideoFrame(TextureView view, VideoFrame videoFrame) {
-        Log.d(TAG, "onSceneVideoFrame");
-        for (IMetachatSceneEventHandler handler : metaChatSceneEventHandlerMap.keySet()) {
-            handler.onSceneVideoFrame(view, videoFrame);
         }
     }
 
@@ -692,36 +617,6 @@ public class MetaChatContext implements IMetachatEventHandler, IMetachatSceneEve
     }
 
     public int getSceneId() {
-        return MetaChatConstants.SCENE_ID_SDK_2_5_TEST;
-    }
-
-    public RtcEngine getRtcEngine() {
-        return rtcEngine;
-    }
-
-    public void addSceneView(TextureView view, SceneDisplayConfig config) {
-        if (null != metaChatScene) {
-            metaChatScene.addSceneView(view, config);
-        }
-    }
-
-    public void enableSceneVideo(TextureView view, boolean enable) {
-        if (null != metaChatScene) {
-            metaChatScene.enableSceneVideo(view, enable);
-        }
-    }
-
-    public void removeSceneView(TextureView view) {
-        if (null != metaChatScene) {
-            metaChatScene.removeSceneView(view);
-        }
-    }
-
-    public boolean pushExternalVideoFrame(VideoFrame videoFrame) {
-        if (null == rtcEngine) {
-            return false;
-        }
-
-        return rtcEngine.pushExternalVideoFrame(videoFrame);
+        return MetaChatConstants.SCENE_ID_SDK_2_TEST;
     }
 }

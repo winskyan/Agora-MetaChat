@@ -11,8 +11,6 @@
 APP_ID=xxxxx
 #app certificate
 APP_CERTIFICATE=xxxxx
-FACE_CAP_APP_ID=xxxxx
-FACE_CAP_APP_KEY=xxxxx
 ```
 
 3.Run the example
